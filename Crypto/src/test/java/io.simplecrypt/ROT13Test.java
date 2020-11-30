@@ -1,4 +1,14 @@
+package io.simplecrypt;
+
+import org.junit.Assert;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.*;
 
@@ -86,6 +96,27 @@ public class ROT13Test {
         System.out.println(actual);
         // Then
         assertTrue(actual.equals(Q1));
+    }
+
+    @Test
+    public void testCryptWrite(){
+        ROT13 cipher = new ROT13('a', 'n');
+        try {
+            List<String> streamDecrypted = Files.lines(Paths.get("sonnet18.txt"))
+                    .collect(Collectors.toList());
+
+            List<String> streamEncrypted = Files.lines(Paths.get("sonnet18.enc"))
+                    .collect(Collectors.toList());
+
+            for(int i =0; i<streamEncrypted.size(); i++){
+                String decrypted = streamDecrypted.get(i);
+                String reverseEncrypted =  cipher.decrypt(streamEncrypted.get(i));
+                Assert.assertEquals(decrypted, reverseEncrypted);
+            }
+        }
+        catch(IOException e){
+            System.out.println("An error occurred");
+        }
     }
 
 }
